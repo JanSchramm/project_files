@@ -19,7 +19,7 @@ public class Beispiele {
                 System.out.println("Dieses Beispiel gibt es nicht!");
                 System.exit(-1);
         }
-        return null;
+        return null; // Rückgabe
     }
 
     public static Knoten[] gibKnotenliste(String... name) {
