@@ -3,11 +3,15 @@ class Knoten {
    private int x, y;  // Position im Zeichenfenster
    private int entfernung; // Entfernung zum Startknoten
    private Knoten vorgaenger; // Vorgaengerknoten auf dem Weg zum Startknoten
+   int bearbeitungsstatus; // 0 = unbesucht, 1 = in Bearbeitung, 2 = fertig
 
    public Knoten(String name) {
       this.name = name;
       this.x = -1;
       this.y = -1;
+      vorgaenger = null;
+      entfernung = Integer.MAX_VALUE;
+      bearbeitungsstatus = 0;
    }
 
    public String getName() {
@@ -44,5 +48,22 @@ class Knoten {
 
    public void setVorgaenger(Knoten vorgaenger) {
       this.vorgaenger = vorgaenger;
+   }
+
+   public int getBearbeitungsstatus() {
+      return bearbeitungsstatus;
+   }  
+
+   public void setBearbeitungsstatus(int bearbeitungsstatus) {
+      this.bearbeitungsstatus = bearbeitungsstatus;
+   }  
+   
+   /**
+    * Setzt die Entfernung auf den Wert unendlich und den Vorgaenger auf null.
+    */
+   public initialisieren() {
+      entfernung = Integer.MAX_VALUE;
+      vorgaenger = null;
+      bearbeitungsstatus = 0;
    }
 }
