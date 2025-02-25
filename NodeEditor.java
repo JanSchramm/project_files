@@ -207,6 +207,9 @@ public class NodeEditor extends JFrame {
 
     }
 
+    /**
+     * Erzeugt eine Liste von Knoten aus den gegebenen Namen und Koordinaten.
+     */
     public static Knoten[] gibKnotenliste(String[] namen, int[] x, int[] y) {
 
         if (namen.length != x.length || namen.length != y.length) {
