@@ -22,6 +22,14 @@ public class Kanten {
         this.von = von;
     }
 
+    public int getNach() {
+        return nach;
+    }
+
+    public void setNach(int nach) {
+        this.nach = nach;
+    }
+
     public int getX1() {
         return x1;
     }
@@ -38,27 +46,31 @@ public class Kanten {
         this.y1 = y;
     }
 
-    public void setX2(int x){
+    public void setX2(int x) {
         this.x2 = x;
     }
 
-    public int getX2(){
+    public int getX2() {
         return x2;
     }
-    
-    public void setY2(int y){
+
+    public void setY2(int y) {
         this.y2 = y;
     }
-    
-    public int getY2(){
+
+    public int getY2() {
         return y2;
     }
 
-    public String getGewichtString(){
+    public String getGewichtString() {
         return Integer.toString(gewicht);
     }
 
-    public void setGewicht(int gewicht){
+    public int getGewichtInteger() {
+        return gewicht;
+    }
+
+    public void setGewicht(int gewicht) {
         this.gewicht = gewicht;
     }
 }

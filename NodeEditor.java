@@ -1,13 +1,10 @@
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-@SuppressWarnings("unused")
 public class NodeEditor extends JFrame {
-    // private ArrayList<Knoten> nodes = new ArrayList<>();
-    // private ArrayList<Kanten> edges = new ArrayList<>();
+
     private ArrayList<Knoten> selectedPath = new ArrayList<>();
     private JButton astarButton;
 
@@ -21,72 +18,63 @@ public class NodeEditor extends JFrame {
         setLocationRelativeTo(null);
 
         // Beispiel-Graph laden
-        graph = Beispiele.gibGraph(1);
-        // if (graph == null || graph.knoten == null || graph.kanten == null) {
-        // System.out.println("Fehler: Graph ist null oder enthält keine Knoten oder
-        // enthält keine Kanten!");
-        // } else {
-        // setNodes(graph.knoten);
-        // setEdges(graph.kanten);
-        // }
+        this.graph = Beispiele.gibGraph(3);
 
         // Panel für Button oben in der Mitte
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        astarButton = new JButton("A* Algorithmus Ausführen");
+        astarButton = new JButton("A* Algorithmus starten");
         topPanel.add(astarButton);
         add(topPanel, BorderLayout.NORTH);
 
+        // Panel für Knoten und Kanten
         DrawingPanel drawingPanel = new DrawingPanel();
         add(drawingPanel, BorderLayout.CENTER);
 
+        // A* Algorithmus-Button hinzufügen
         astarButton.addActionListener(e -> {
             int totalLength = calculatePathLength();
             System.out.println("Gesamtlänge des Pfades: " + totalLength);
         });
     }
 
-    // // Methode zum Initialisieren der Knoten
-    // public void setNodes(Knoten[] knoten) {
-    // for (Knoten k : knoten) {
-    // nodes.add(k);
-    // }
-    // }
-
-    // // Methode zum Initialisieren der Kanten
-    // public void setEdges(Kanten[] kanten) {
-    // for (Kanten k : kanten) {
-    // edges.add(k);
-    // }
-    // }
-
     private int calculatePathLength() {
         int totalLength = 0;
 
+        // Berechne den Pfad entlang der Kanten und addiere die Längen der Kanten
         for (int i = 0; i < selectedPath.size() - 1; i++) {
             Knoten current = selectedPath.get(i);
             Knoten next = selectedPath.get(i + 1);
 
-            // Durchlaufe die Kanten und vergleiche die Knotenbezeichner
-            for (int j = 0; j < graph.kanten.length; j++) {
-                boolean isEdgeConnected = (graph.kanten[i][j].getX1() == current.getX()
-                        && graph.kanten[i][j].getY1() == current.getY() &&
-                        graph.kanten[i][j].getX2() == next.getX() && graph.kanten[i][j].getY2() == next.getY()) ||
-                        (graph.kanten[i][j].getX2() == current.getX() && graph.kanten[i][j].getY2() == current.getY() &&
-                                graph.kanten[i][j].getX1() == next.getX() && graph.kanten[i][j].getY1() == next.getY());
+            // Finde die Indexpositionen der Knoten im Graphen
+            int indexCurrent = -1;
+            int indexNext = -1;
 
-                // Wenn die Kante zwischen den Knoten existiert, dann die Länge hinzufügen
-                if (isEdgeConnected) {
-                    try {
-                        totalLength += Integer.parseInt(graph.kanten[i][j].getGewichtString()); // Annahme, dass der Name die
-                                                                                          // Länge ist
-                    } catch (NumberFormatException e) {
-                        System.out.println("Fehler beim Parsen des Kantenbezeichners als Länge.");
-                    }
-                    break;
-                } else {
-                    System.out.println("Die Kante ist nicht verbunden");
+            for (int k = 0; k < graph.knoten.length; k++) {
+                if (graph.knoten[k] == current) {
+                    indexCurrent = k;
                 }
+                if (graph.knoten[k] == next) {
+                    indexNext = k;
+                }
+            }
+
+            if (indexCurrent == -1 || indexNext == -1) {
+                System.out.println("Fehler: Knoten nicht im Graphen gefunden!");
+                return -1; // Fehlercode zurückgeben
+            }
+
+            // Prüfe, ob eine Kante zwischen den beiden Knoten existiert
+            Kanten edge = graph.kanten[indexCurrent][indexNext];
+
+            if (edge != null) {
+                try {
+                    totalLength += edge.getGewichtInteger(); // Direkt int verwenden
+                } catch (NumberFormatException e) {
+                    System.out.println("Fehler beim Parsen der Kantenlänge.");
+                }
+            } else {
+                System.out.println("Keine Verbindung zwischen " + current.getName() + " und " + next.getName());
             }
         }
         return totalLength;
@@ -95,19 +83,22 @@ public class NodeEditor extends JFrame {
     private class DrawingPanel extends JPanel {
         public DrawingPanel() {
 
+            // Reagiert auf Mausklicks und entfernt gewählte Knoten aus der Auswahl / fügt
+            // sie der Auswahl hinzu
             addMouseListener(new MouseAdapter() {
-
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
                         for (int i = 0; i < graph.knoten.length; i++) {
-                            if (new Rectangle(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30)
-                                    .contains(e.getPoint())) {
-                                if (!selectedPath.contains(graph.knoten[i])) {
-                                    selectedPath.add(graph.knoten[i]);
-                                    repaint();
+                            if (graph.knoten[i] != null) {
+                                if (new Rectangle(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30)
+                                        .contains(e.getPoint())) {
+                                    if (!selectedPath.contains(graph.knoten[i])) {
+                                        selectedPath.add(graph.knoten[i]);
+                                        repaint();
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
                     } else if (SwingUtilities.isRightMouseButton(e)) {
@@ -123,18 +114,54 @@ public class NodeEditor extends JFrame {
             });
         }
 
+        // Zeichnet Knoten und Kanten des Graphen
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.setColor(Color.BLACK);
+
+            int versatz = 10; // Versatz zur Trennung der Kanten-Beschriftungen
+
+            // Zeichne die Kanten
             for (int i = 0; i < graph.kanten.length; i++) {
-                for (int j = 0; j < graph.kanten.length; j++) {
-                    g.drawLine(graph.kanten[i][j].getX1(), graph.kanten[i][j].getY1(), graph.kanten[i][j].getX2(), graph.kanten[i][j].getY2());
-                    g.drawString(graph.kanten[i][j].getGewichtString(), (graph.kanten[i][j].getX2() + graph.kanten[i][j].getX1()) / 2,
-                            (graph.kanten[i][j].getY2() + graph.kanten[i][j].getY1()) / 2);
+                for (int j = 0; j < graph.kanten[i].length; j++) {
+                    if (graph.kanten[i][j] != null) { // Überprüfung auf null
+
+                        int x1 = graph.kanten[i][j].getX1();
+                        int y1 = graph.kanten[i][j].getY1();
+                        int x2 = graph.kanten[i][j].getX2();
+                        int y2 = graph.kanten[i][j].getY2();
+
+                        // Falls die Kante AB und BA verschiedene Gewichte haben
+                        if (graph.matrix[i][j] != graph.matrix[j][i]) {
+                            if (i < j) {
+                                // Kante AB
+                                g.drawLine(x1 - versatz, y1 - versatz, x2 - versatz, y2 - versatz);
+                                // Beschriftung der Kante AB
+                                g.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
+                                        + graph.knoten[j].getName(),
+                                        (x1 + x2) / 2 - versatz, (y1 + y2) / 2 - versatz);
+
+                            } else {
+                                // Kante BA
+                                g.drawLine(x1 + versatz, y1 + versatz, x2 + versatz, y2 + versatz);
+                                // Beschriftung der Kante BA
+                                g.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
+                                        + graph.knoten[j].getName(),
+                                        (x1 + x2) / 2 + versatz, (y1 + y2) / 2 + versatz);
+
+                            }
+                        } else { // Falls die Kante ungerichtet ist (gleiche Gewichte)
+                            g.drawLine(x1, y1, x2, y2);
+                            g.drawString(
+                                    graph.kanten[i][j].getGewichtString(),
+                                    (x1 + x2) / 2, (y1 + y2) / 2);
+                        }
+                    }
                 }
             }
 
+            // Zeichne die ausgewählten Knoten
             for (int i = 0; i < graph.knoten.length; i++) {
                 if (selectedPath.contains(graph.knoten[i])) {
                     g.setColor(Color.GREEN);
@@ -150,13 +177,11 @@ public class NodeEditor extends JFrame {
                 g.setColor(Color.BLACK);
             }
         }
-    }
 
-    void neu(){
-        
     }
 
     public static Knoten[] gibKnotenliste(String[] namen, int[] x, int[] y) {
+
         if (namen.length != x.length || namen.length != y.length) {
             throw new IllegalArgumentException("Ungleiche Anzahl an Namen und Koordinaten!");
         }

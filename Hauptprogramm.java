@@ -4,11 +4,6 @@ import javax.swing.*;
 @SuppressWarnings("unused")
 public class Hauptprogramm extends NodeEditor {
 
-    // Graph graph;
-    // Knoten[] knoten;
-    // int[][] matrix;
-    // int anzahlKnoten;
-
     Hauptprogramm() {
         super();
     }

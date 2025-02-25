@@ -7,13 +7,6 @@ public class Beispiele {
                 return gibGraph2();
             case 3:
                 return gibGraph3();
-            // case 4 : return gibGraph4();
-            // case 5 : return gibGraph5();
-            // case 6 : return gibGraph6();
-            // case 7 : return gibGraph7();
-            // case 8 : return gibGraph8();
-            // case 9 : return gibGraph9();
-            // case 10 : return gibGraph10();
 
             default:
                 System.out.println("Dieses Beispiel gibt es nicht!");
@@ -38,24 +31,25 @@ public class Beispiele {
         int[] xPos = { 100, 200, 300, 400, 500 };
         int[] yPos = { 150, 300, 200, 350, 400 };
 
+        // Matrix für die Kanten initialisieren
         g.matrix = new int[][] {
-                { 0, 0, 3, 0, 0 },
-                { 0, 0, 5, 0, 2 },
+                { 0, 8, 3, 0, 0 },
+                { 9, 0, 5, 0, 2 },
                 { 3, 5, 0, 1, 0 },
                 { 0, 0, 1, 0, 4 },
                 { 0, 2, 0, 4, 0 }
         };
 
-        System.out.println("");
         for (int i = 0; i < namen.length; i++) {
+            // Knotenliste füllen, XYPos zuweisen
             g.knoten[i] = new Knoten(namen[i]);
             g.knoten[i].setX(xPos[i]);
             g.knoten[i].setY(yPos[i]);
+
             // Kantenliste füllen, XYPos zuweisen
             for (int j = 0; j < namen.length; j++) {
                 if (g.matrix[i][j] != 0) {
-                    System.out.println(i+" "+j+" "+g.matrix[i][j]);
-                    g.kanten[i][j] = new Kanten(i,j);
+                    g.kanten[i][j] = new Kanten(i, j);
                     g.kanten[i][j].setX1(xPos[i]);
                     g.kanten[i][j].setY1(yPos[i]);
                     g.kanten[i][j].setX2(xPos[j]);
@@ -71,7 +65,13 @@ public class Beispiele {
 
     public static Graph gibGraph2() {
         Graph g = new Graph(5);
-        g.knoten = gibKnotenliste("A", "B", "C", "D", "E");
+        g.knoten = new Knoten[5];
+        g.kanten = new Kanten[5][5];
+
+        String[] namen = { "A", "B", "C", "D", "E" };
+        int[] xPos = { 200, 200, 400, 400, 300 };
+        int[] yPos = { 150, 300, 300, 150, 100 };
+
         g.matrix = new int[][] {
                 { 0, 25, 0, 1, 2 },
                 { 6, 0, 7, 4, 0 },
@@ -79,19 +79,72 @@ public class Beispiele {
                 { 1, 3, 1, 0, 0 },
                 { 5, 0, 0, 0, 0 }
         };
+
+        // Befüllt die Knoten- und Kantenliste
+        for (int i = 0; i < namen.length; i++) {
+            // Knotenliste füllen, XYPos zuweisen
+            g.knoten[i] = new Knoten(namen[i]);
+            g.knoten[i].setX(xPos[i]);
+            g.knoten[i].setY(yPos[i]);
+
+            // Kantenliste füllen, XYPos zuweisen
+            for (int j = 0; j < namen.length; j++) {
+                if (g.matrix[i][j] != 0) {
+                    g.kanten[i][j] = new Kanten(i, j);
+                    g.kanten[i][j].setX1(xPos[i]);
+                    g.kanten[i][j].setY1(yPos[i]);
+                    g.kanten[i][j].setX2(xPos[j]);
+                    g.kanten[i][j].setY2(yPos[j]);
+                    g.kanten[i][j].setGewicht(g.matrix[i][j]);
+                }
+            }
+
+        }
+
         return g;
     }
 
     public static Graph gibGraph3() {
-        Graph g = new Graph(5);
-        g.knoten = gibKnotenliste("A", "B", "C", "D", "E");
+        Graph g = new Graph(8);
+        g.knoten = new Knoten[8];
+        g.kanten = new Kanten[8][8];
+
+        String[] namen = { "A", "B", "C", "D", "E", "F", "G", "H" };
+        int[] xPos = { 100, 200, 300, 400, 500, 400, 200, 300 };
+        int[] yPos = { 150, 200, 150, 250, 400, 150, 350, 400 };
+
         g.matrix = new int[][] {
-                { 0, 1, 1, 0, 0 },
-                { 1, 0, 1, 0, 0 },
-                { 1, 1, 0, 0, 0 },
-                { 0, 0, 0, 0, 1 },
-                { 0, 0, 0, 1, 0 }
+                { 0, 6, 1, 0, 0, 0, 0, 0 },
+                { 6, 0, 2, 9, 0, 0, 4, 8 },
+                { 1, 2, 0, 0, 0, 4, 0, 0 },
+                { 0, 0, 0, 0, 7, 0, 0, 0 },
+                { 0, 0, 0, 7, 0, 0, 0, 0 },
+                { 0, 0, 4, 5, 0, 0, 0, 0 },
+                { 0, 0, 0, 1, 3, 0, 0, 4 },
+                { 0, 0, 0, 5, 0, 0, 0, 0 }
         };
+
+        // Befüllt die Knoten- und Kantenliste
+        for (int i = 0; i < namen.length; i++) {
+            // Knotenliste füllen, XYPos zuweisen
+            g.knoten[i] = new Knoten(namen[i]);
+            g.knoten[i].setX(xPos[i]);
+            g.knoten[i].setY(yPos[i]);
+
+            // Kantenliste füllen, XYPos zuweisen
+            for (int j = 0; j < namen.length; j++) {
+                if (g.matrix[i][j] != 0) {
+                    g.kanten[i][j] = new Kanten(i, j);
+                    g.kanten[i][j].setX1(xPos[i]);
+                    g.kanten[i][j].setY1(yPos[i]);
+                    g.kanten[i][j].setX2(xPos[j]);
+                    g.kanten[i][j].setY2(yPos[j]);
+                    g.kanten[i][j].setGewicht(g.matrix[i][j]);
+                }
+            }
+
+        }
+
         return g;
     }
 }
