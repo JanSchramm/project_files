@@ -32,15 +32,38 @@ public class Beispiele {
     public static Graph gibGraph1() {
         Graph g = new Graph(5);
         g.knoten = new Knoten[5];
+        g.kanten = new Kanten[5][5];
 
         String[] namen = { "A", "B", "C", "D", "E" };
         int[] xPos = { 100, 200, 300, 400, 500 };
-        int[] yPos = { 150, 250, 200, 350, 400 };
+        int[] yPos = { 150, 300, 200, 350, 400 };
 
+        g.matrix = new int[][] {
+                { 0, 0, 3, 0, 0 },
+                { 0, 0, 5, 0, 2 },
+                { 3, 5, 0, 1, 0 },
+                { 0, 0, 1, 0, 4 },
+                { 0, 2, 0, 4, 0 }
+        };
+
+        System.out.println("");
         for (int i = 0; i < namen.length; i++) {
             g.knoten[i] = new Knoten(namen[i]);
             g.knoten[i].setX(xPos[i]);
             g.knoten[i].setY(yPos[i]);
+            // Kantenliste füllen, XYPos zuweisen
+            for (int j = 0; j < namen.length; j++) {
+                if (g.matrix[i][j] != 0) {
+                    System.out.println(i+" "+j+" "+g.matrix[i][j]);
+                    g.kanten[i][j] = new Kanten(i,j);
+                    g.kanten[i][j].setX1(xPos[i]);
+                    g.kanten[i][j].setY1(yPos[i]);
+                    g.kanten[i][j].setX2(xPos[j]);
+                    g.kanten[i][j].setY2(yPos[j]);
+                    g.kanten[i][j].setGewicht(g.matrix[i][j]);
+                }
+            }
+
         }
 
         return g;
@@ -50,11 +73,11 @@ public class Beispiele {
         Graph g = new Graph(5);
         g.knoten = gibKnotenliste("A", "B", "C", "D", "E");
         g.matrix = new int[][] {
-                { 0, 1, 0, 1, 1 },
-                { 1, 0, 1, 1, 0 },
-                { 0, 1, 0, 1, 0 },
-                { 1, 1, 1, 0, 0 },
-                { 1, 0, 0, 0, 0 }
+                { 0, 25, 0, 1, 2 },
+                { 6, 0, 7, 4, 0 },
+                { 0, 1, 0, 19, 0 },
+                { 1, 3, 1, 0, 0 },
+                { 5, 0, 0, 0, 0 }
         };
         return g;
     }
