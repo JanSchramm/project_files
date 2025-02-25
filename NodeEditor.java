@@ -1,10 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
 import javax.swing.*;
 
 public class NodeEditor extends JFrame {
@@ -226,6 +222,7 @@ public class NodeEditor extends JFrame {
         return liste;
     }
 
+    /* 
     public void starteDijkstra(Knoten start, Knoten ziel) {
         // Eine PriorityQueue, die Knoten nach ihrer Entfernung sortiert
         PriorityQueue<Knoten> pq = new PriorityQueue<>(Comparator.comparingInt(Knoten::getEntfernung));
@@ -277,6 +274,7 @@ public class NodeEditor extends JFrame {
         System.out.println("\nGesamte Entfernung: " + ziel.getEntfernung());
     }
 
+    */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             NodeEditor editor = new NodeEditor();

@@ -61,7 +61,7 @@ class Knoten {
    /**
     * Setzt die Entfernung auf den Wert unendlich und den Vorgaenger auf null.
     */
-   public initialisieren() {
+   public void initialisieren() {
       entfernung = Integer.MAX_VALUE;
       vorgaenger = null;
       bearbeitungsstatus = 0;
