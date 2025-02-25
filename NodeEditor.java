@@ -1,7 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class NodeEditor extends JFrame {
 
@@ -18,7 +18,7 @@ public class NodeEditor extends JFrame {
         setLocationRelativeTo(null);
 
         // Beispiel-Graph laden
-        this.graph = Beispiele.gibGraph(3);
+        this.graph = Beispiele.gibGraph(1);
 
         // Panel für Button oben in der Mitte
         JPanel topPanel = new JPanel();
@@ -194,6 +194,14 @@ public class NodeEditor extends JFrame {
         }
 
         return liste;
+    }
+
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            NodeEditor editor = new NodeEditor();
+            editor.setVisible(true); // Fenster sichtbar machen
+        });
     }
 
 }

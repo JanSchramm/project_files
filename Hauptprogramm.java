@@ -1,5 +1,3 @@
-import java.util.*;
-import javax.swing.*;
 
 @SuppressWarnings("unused")
 public class Hauptprogramm extends NodeEditor {
@@ -13,10 +11,4 @@ public class Hauptprogramm extends NodeEditor {
         return Beispiele.gibGraph(1);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            NodeEditor editor = new NodeEditor();
-            editor.setVisible(true); // Fenster sichtbar machen
-        });
-    }
 }
