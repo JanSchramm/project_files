@@ -7,7 +7,10 @@ public class Beispiele {
                 return gibGraph2();
             case 3:
                 return gibGraph3();
-
+            case 4:
+                return gibGraph4();
+            case 5:
+                return gibGraph5();
             default:
                 System.out.println("Dieses Beispiel gibt es nicht!");
                 System.exit(-1);
@@ -147,4 +150,95 @@ public class Beispiele {
 
         return g;
     }
+
+    public static Graph gibGraph4() {
+        Graph g = new Graph(10); // 10 Knoten für einen komplexeren Graphen
+        g.knoten = new Knoten[10];
+        g.kanten = new Kanten[10][10];
+
+        String[] namen = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        int[] xPos = { 100, 200, 300, 400, 500, 600, 350, 500, 300, 200 };
+        int[] yPos = { 100, 200, 150, 250, 300, 200, 300, 400, 350, 300 };
+
+        g.matrix = new int[][] {
+                { 0, 10, 20, 0, 0, 0, 0, 0, 0, 0 },
+                { 10, 0, 5, 15, 0, 0, 0, 0, 0, 0 },
+                { 20, 5, 0, 30, 0, 10, 0, 0, 0, 0 },
+                { 0, 15, 30, 0, 10, 0, 10, 0, 0, 0 },
+                { 0, 0, 0, 10, 0, 5, 0, 15, 0, 0 },
+                { 0, 0, 10, 0, 5, 0, 0, 0, 0, 10 },
+                { 0, 0, 0, 10, 0, 0, 0, 20, 10, 0 },
+                { 0, 0, 0, 0, 15, 0, 20, 0, 5, 0 },
+                { 0, 0, 0, 0, 0, 0, 10, 5, 0, 25 },
+                { 0, 0, 0, 0, 0, 10, 0, 0, 25, 0 }
+        };
+
+        for (int i = 0; i < namen.length; i++) {
+            // Knotenliste füllen, XYPos zuweisen
+            g.knoten[i] = new Knoten(namen[i]);
+            g.knoten[i].setX(xPos[i]);
+            g.knoten[i].setY(yPos[i]);
+
+            // Kantenliste füllen, XYPos zuweisen
+            for (int j = 0; j < namen.length; j++) {
+                if (g.matrix[i][j] != 0) {
+                    g.kanten[i][j] = new Kanten(i, j);
+                    g.kanten[i][j].setX1(xPos[i]);
+                    g.kanten[i][j].setY1(yPos[i]);
+                    g.kanten[i][j].setX2(xPos[j]);
+                    g.kanten[i][j].setY2(yPos[j]);
+                    g.kanten[i][j].setGewicht(g.matrix[i][j]);
+                }
+            }
+        }
+
+        return g;
+    }
+
+    public static Graph gibGraph5() {
+        Graph g = new Graph(12); // 12 Knoten für noch mehr Komplexität
+        g.knoten = new Knoten[12];
+        g.kanten = new Kanten[12][12];
+
+        String[] namen = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
+        int[] xPos = { 50, 150, 250, 350, 450, 550, 650, 650, 450, 350, 500, 650 };
+        int[] yPos = { 100, 200, 100, 200, 300, 400, 300, 200, 100, 50, 50, 100 };
+
+        g.matrix = new int[][] {
+                { 0, 10, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 10, 0, 15, 5, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 5, 15, 0, 10, 0, 0, 10, 0, 0, 0, 0, 0 },
+                { 0, 5, 10, 0, 20, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 20, 0, 5, 15, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 5, 0, 10, 0, 0, 0, 0, 0 },
+                { 0, 0, 10, 0, 15, 10, 0, 20, 5, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 20, 0, 10, 0, 0, 25 },
+                { 0, 0, 0, 0, 0, 0, 5, 10, 0, 15, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 25, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 25, 0, 25, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+        };
+
+        for (int i = 0; i < namen.length; i++) {
+            // Knotenliste füllen, XYPos zuweisen
+            g.knoten[i] = new Knoten(namen[i]);
+            g.knoten[i].setX(xPos[i]);
+            g.knoten[i].setY(yPos[i]);
+
+            // Kantenliste füllen, XYPos zuweisen
+            for (int j = 0; j < namen.length; j++) {
+                if (g.matrix[i][j] != 0) {
+                    g.kanten[i][j] = new Kanten(i, j);
+                    g.kanten[i][j].setX1(xPos[i]);
+                    g.kanten[i][j].setY1(yPos[i]);
+                    g.kanten[i][j].setX2(xPos[j]);
+                    g.kanten[i][j].setY2(yPos[j]);
+                    g.kanten[i][j].setGewicht(g.matrix[i][j]);
+                }
+            }
+        }
+
+        return g;
+    }
+
 }

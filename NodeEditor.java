@@ -25,11 +25,34 @@ public class NodeEditor extends JFrame {
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         astarButton = new JButton("A* Algorithmus starten");
         topPanel.add(astarButton);
-        add(topPanel, BorderLayout.NORTH);
+
+        // Panel für Dropdown (Graph Auswahl)
+        JPanel topLeftPanel = new JPanel();
+        topLeftPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // Panel links ausrichten
+        String[] antwortMöglichkeiten = { "Graph 1", "Graph 2", "Graph 3", "Graph 4", "Graph 5" };
+        final JComboBox<String> graphComboSelect = new JComboBox<>(antwortMöglichkeiten);
+        topLeftPanel.add(graphComboSelect);
+
+        // Kombinieren der beiden Panels oben
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BorderLayout());
+        headerPanel.add(topPanel, BorderLayout.CENTER);
+        headerPanel.add(topLeftPanel, BorderLayout.WEST);
+
+        // Füge den oberen Bereich zum Hauptfenster hinzu
+        add(headerPanel, BorderLayout.NORTH);
 
         // Panel für Knoten und Kanten
         DrawingPanel drawingPanel = new DrawingPanel();
         add(drawingPanel, BorderLayout.CENTER);
+
+        // Graph Auswahl Event Listener
+        graphComboSelect.addActionListener(e -> {
+            int selectedGraph = graphComboSelect.getSelectedIndex() + 1; // Graph 1, 2 oder 3
+            this.graph = Beispiele.gibGraph(selectedGraph); // Setze den ausgewählten Graphen
+            selectedPath.clear(); // Leere den Pfad, wenn der Graph gewechselt wird
+            drawingPanel.repaint(); // Panel neu zeichnen
+        });
 
         // A* Algorithmus-Button hinzufügen
         astarButton.addActionListener(e -> {
