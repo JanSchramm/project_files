@@ -1,0 +1,157 @@
+// import java.util.PriorityQueue;
+
+// public class temp {
+
+// public void aStarSearch(int[][] grid,
+// int rows,
+// int cols,
+// Pair src,
+// Pair dest) {
+
+// if (!isValid(grid, rows, cols, src)) {
+// System.out.println("Source is invalid...");
+// return;
+// }
+
+// if (!isValid(grid, rows, cols, dest)) {
+// System.out.println("Destination is invalid...");
+// return;
+// }
+
+// if (!isUnBlocked(grid, rows, cols, src)
+// || !isUnBlocked(grid, rows, cols, dest)) {
+// System.out.println("Source or destination is blocked...");
+// return;
+// }
+
+// if (isDestination(src, dest)) {
+// System.out.println("We're already (t)here...");
+// return;
+// }
+
+// boolean[][] closedList = new boolean[rows][cols];
+
+// Cell[][] cellDetails = new Cell[rows][cols];
+
+// int i, j;
+
+// i = src.first;
+// j = src.second;
+// cellDetails[i][j] = new Cell();
+// cellDetails[i][j].f = 0.0;
+// cellDetails[i][j].g = 0.0;
+// cellDetails[i][j].h = 0.0;
+// cellDetails[i][j].parent = new Pair(i, j);
+
+// PriorityQueue<Details> openList = new PriorityQueue<>((o1, o2) -> (int)
+// Math.round(o1.value - o2.value));
+
+// openList.add(new Details(0.0, i, j));
+
+// while (!openList.isEmpty()) {
+// Details p = openList.peek();
+
+// i = p.i;
+// j = p.j;
+
+// openList.poll();
+// closedList[i][j] = true;
+
+// for (int addX = -1; addX <= 1; addX++) {
+// for (int addY = -1; addY <= 1; addY++) {
+// Pair neighbour = new Pair(i + addX, j + addY);
+// if (isValid(grid, rows, cols, neighbour)) {
+// if (cellDetails[neighbour.first] == null) {
+// cellDetails[neighbour.first] = new Cell[cols];
+// }
+// if (cellDetails[neighbour.first][neighbour.second] == null) {
+// cellDetails[neighbour.first][neighbour.second] = new Cell();
+// }
+
+// if (isDestination(neighbour, dest)) {
+// cellDetails[neighbour.first][neighbour.second].parent = new Pair(i, j);
+// System.out.println("The destination cell is found");
+// tracePath(cellDetails, rows, cols, dest);
+// return;
+// }
+
+// else if (!closedList[neighbour.first][neighbour.second]
+// && isUnBlocked(grid, rows, cols, neighbour)) {
+// double gNew, hNew, fNew;
+// gNew = cellDetails[i][j].g + 1.0;
+// hNew = calculateHValue(neighbour, dest);
+// fNew = gNew + hNew;
+
+// if (cellDetails[neighbour.first][neighbour.second].f == -1
+// || cellDetails[neighbour.first][neighbour.second].f > fNew) {
+
+// openList.add(new Details(fNew, neighbour.first, neighbour.second));
+
+// cellDetails[neighbour.first][neighbour.second].g = gNew;
+
+// cellDetails[neighbour.first][neighbour.second].f = fNew;
+// cellDetails[neighbour.first][neighbour.second].parent = new Pair(i, j);
+// }
+// }
+// }
+// }
+// }
+// }
+
+// System.out.println("Failed to find the Destination Cell");
+// }
+// }
+
+////////////////////////////////////////////////////////////////
+// NodeEditor Backup 24/02/2025
+////////////////////////////////////////////////////////////////
+
+// Beispielhafte Tabelle von Knoten (X, Y Werte)
+// private int[][] predefinedNodes = {
+// { 100, 100 },
+// { 200, 150 },
+// { 300, 200 },
+// { 400, 250 },
+// { 500, 300 }
+// };
+
+// public NodeEditor() {
+// setTitle("Graph-Knoten Editor");
+// setSize(800, 600);
+// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+// setLocationRelativeTo(null);
+
+// // Initialisiere Knoten aus der Tabelle
+// // initializeNodesFromTable();
+// setNodes(knoten);
+
+// // Setze Knotenpositionen
+// // for (int i = 0; i < nodes.size(); i++) {
+// // nodes.set(i, new Point(predefinedNodes[i][0], predefinedNodes[i][1]));
+// // }
+
+// // Panel für das Zeichnen
+// DrawingPanel panel = new DrawingPanel();
+// add(panel);
+// }
+
+// Methode zum Initialisieren der Knoten aus der Tabelle
+// private void initializeNodesFromTable() {
+// for (int[] node : predefinedNodes) {
+// nodes.add(new Point(node[0], node[1]));
+// }
+// }
+
+// Methode zum Initialisieren der Knoten
+// public void setNodes(Knoten[] knoten) {
+// knoten = new Knoten[10];
+// for (int i = 0; i < 10; i++) {
+// knoten[i] = new Knoten("Knoten " + (i + 1));
+// knoten[i].setX(i * 100);
+// knoten[i].setY(i * 50);
+// }
+
+// for (int i = 0; i < knoten.length; i++) {
+// nodes.add(new Point(knoten[i].getX(), knoten[i].getY()));
+// }
+// }
