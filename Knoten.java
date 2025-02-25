@@ -1,6 +1,8 @@
 class Knoten {
    private String name;
-   private int x, y;
+   private int x, y;  // Position im Zeichenfenster
+   private int entfernung; // Entfernung zum Startknoten
+   private Knoten vorgaenger; // Vorgaengerknoten auf dem Weg zum Startknoten
 
    public Knoten(String name) {
       this.name = name;
@@ -26,5 +28,21 @@ class Knoten {
 
    public void setY(int y) {
       this.y = y;
+   }
+
+   public int getEntfernung() {
+      return entfernung;
+   }  
+
+   public void setEntfernung(int entfernung) {
+      this.entfernung = entfernung;
+   }  
+
+   public Knoten getVorgaenger() {
+      return vorgaenger;
+   }  
+
+   public void setVorgaenger(Knoten vorgaenger) {
+      this.vorgaenger = vorgaenger;
    }
 }
