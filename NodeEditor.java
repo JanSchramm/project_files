@@ -72,6 +72,9 @@ public class NodeEditor extends JFrame {
             int totalLength = calculatePathLength();
             System.out.println("Gesamtlänge des Pfades: " + totalLength);
             starteDijkstra(null, null); // Test der Dijkstra-Methode
+
+            // statt null den start und ziel Knoten angeben
+            // >> 1. bzw. last element von selectedPath (siehe mouselistener)
         });
     }
 
@@ -128,6 +131,11 @@ public class NodeEditor extends JFrame {
                     if (SwingUtilities.isLeftMouseButton(e)) {
                         for (int i = 0; i < graph.knoten.length; i++) {
                             if (graph.knoten[i] != null) {
+
+                                // Überprüfung des Inputs auf Ort
+                                // ToDo: Kanten edge = graph.kanten[indexCurrent][indexNext]; --> Nur
+                                // verbundene Knoten sollen anklickbar sein
+                                //  ToDo: Färbung des Weges (Über calculatePathLength)
                                 if (new Rectangle(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30)
                                         .contains(e.getPoint())) {
                                     if (!selectedPath.contains(graph.knoten[i])) {
@@ -136,7 +144,7 @@ public class NodeEditor extends JFrame {
 
                                         // Aktualisiert das Label deinWeg
                                         weg += graph.knoten[i].getName();
-                                        deinWeg.setText("Dein Weg: " + weg);
+                                        deinWeg.setText("Dein Weg: " + weg + ", Weglänge: " + calculatePathLength());
                                         weg += " ";
                                     }
                                     break;
@@ -144,28 +152,22 @@ public class NodeEditor extends JFrame {
                             }
                         }
                     } else if (SwingUtilities.isRightMouseButton(e)) {
-                        for (Knoten node : selectedPath) {
+                        if (!selectedPath.isEmpty()) {
+                            Knoten node = selectedPath.get(selectedPath.size() - 1);
+
                             if (new Rectangle(node.getX() - 15, node.getY() - 15, 30, 30).contains(e.getPoint())) {
                                 selectedPath.remove(node);
                                 repaint();
 
                                 // Aktualisiert das Label deinWeg
                                 weg = "";
-                                for (int i = 0; i < selectedPath.size(); i++){
+                                for (int i = 0; i < selectedPath.size(); i++) {
                                     // *
                                     weg += selectedPath.get(i).getName();
                                 }
-                                deinWeg.setText("Dein Weg: " + weg);
+                                deinWeg.setText("Dein Weg: " + weg + ", Weglänge: " + calculatePathLength());
                                 weg += " ";
-                                break;
 
-                                /////////////////////////////////////
-                                /// Bug: wenn man mehrere knoten auswählt, und dann einen entfernen möchte
-                                ///      wird das Label auf ABC bzw. ABCD gesetzt, was nicht dem selektierten
-                                ///      Weg entspricht. Problem: i zählt alle Knoten auf, entsprechend der 
-                                ///      länge von selectedPath <> objekte direkt aus selectedPath entnehmen,
-                                ///      von diesen dann den Namen nehmen und weg hinzufügen.
-                                /////////////////////////////////////
                             }
                         }
                     }
@@ -191,10 +193,13 @@ public class NodeEditor extends JFrame {
                         int x2 = graph.kanten[i][j].getX2();
                         int y2 = graph.kanten[i][j].getY2();
 
+                        // Color color = graphen.kanten[i][j].getColor(); implementieren *
+
                         // Falls die Kante AB und BA verschiedene Gewichte haben
                         if (graph.matrix[i][j] != graph.matrix[j][i]) {
                             if (i < j) {
                                 // Kante AB
+                                // * hier farbe anwenden: g.setColor(Color.color);
                                 g.drawLine(x1 - versatz, y1 - versatz, x2 - versatz, y2 - versatz);
                                 // Beschriftung der Kante AB
                                 g.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
