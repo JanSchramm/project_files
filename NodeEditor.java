@@ -1,10 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.Collections;
+import javax.swing.*;
 
 public class NodeEditor extends JFrame {
 
@@ -95,6 +95,14 @@ public class NodeEditor extends JFrame {
 
     private int calculatePathLength() {
         int totalLength = 0;
+        // Alle Kantenfarben zurücksetzen
+        for (int i = 0; i < graph.kanten.length; i++) {
+            for (int j = 0; j < graph.kanten[i].length; j++) {
+                if (graph.kanten[i][j] != null) {
+                    graph.kanten[i][j].setColor(Color.BLACK);
+                }
+            }
+        }
 
         // Berechne den Pfad entlang der Kanten und addiere die Längen der Kanten
         for (int i = 0; i < selectedPath.size() - 1; i++) {
@@ -125,6 +133,10 @@ public class NodeEditor extends JFrame {
             if (edge != null) {
                 try {
                     totalLength += edge.getGewichtInteger(); // Direkt int verwenden
+                    // Kante färben
+                    edge.setColor(Color.RED);
+                    System.out.println("Kante: " + edge.getGewichtString() + " " + edge.getVon() + " " + edge.getNach()
+                            + " " + edge.getColor());
                 } catch (NumberFormatException e) {
                     System.out.println("Fehler beim Parsen der Kantenlänge.");
                 }
@@ -154,17 +166,29 @@ public class NodeEditor extends JFrame {
                                 // * Färbung des Weges (Über calculatePathLength)
                                 if (new Rectangle(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30)
                                         .contains(e.getPoint())) {
-                                    if (!selectedPath.contains(graph.knoten[i])) {
-                                        selectedPath.add(graph.knoten[i]);
-                                        repaint();
+                                    if (!selectedPath.contains(graph.knoten[i])) { // Knoten noch nicht ausgewählt
 
-                                        // Aktualisiert das Label deinWeg
-                                        deinWegString += graph.knoten[i].getName();
-                                        deinWeg.setText(
-                                                "Dein Weg: " + deinWegString + ", Weglänge: " + calculatePathLength());
-                                        deinWegString += " ";
+                                        // erster Knoten im Pfad
+                                        if (selectedPath.isEmpty()) {
+                                            selectedPath.add(graph.knoten[i]);
+                                            repaint();
+                                        } else {
+                                            // Überprüfen ob Verbindung zwischen den Knoten besteht^
+                                            Knoten letzterKnoten = selectedPath.get(selectedPath.size() - 1);
+                                            Knoten neuerKnoten = graph.knoten[i];
+                                            if (graph.existiertKante(letzterKnoten, neuerKnoten)) {
+                                                selectedPath.add(graph.knoten[i]);
+                                                repaint();
+                                            } else {
+                                                System.out
+                                                        .println("Keine Verbindung zwischen " + letzterKnoten.getName()
+                                                                + " und " + neuerKnoten.getName());
+
+                                            }
+
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
@@ -176,17 +200,21 @@ public class NodeEditor extends JFrame {
                                 selectedPath.remove(node);
                                 repaint();
 
-                                // Aktualisiert das Label deinWeg
-                                for (int i = 0; i < selectedPath.size(); i++) {
-                                    // *
-                                    deinWegString += selectedPath.get(i).getName();
-                                }
-                                deinWeg.setText("Dein Weg: " + deinWegString + ", Weglänge: " + calculatePathLength());
-                                deinWegString += " ";
-
                             }
                         }
                     }
+
+                    // Ausgabelabel aktualisieren
+                    deinWegString = "";
+                    for (int j = 0; j < selectedPath.size(); j++) {
+                        // *
+                        deinWegString += selectedPath.get(j).getName();
+                    }
+                    deinWeg.setText(
+                            "Dein Weg: " + deinWegString + ", Weglänge: "
+                                    + calculatePathLength());
+                    deinWegString += " ";
+
                 }
             });
         }
@@ -195,7 +223,10 @@ public class NodeEditor extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            g.setColor(Color.BLACK);
+            // Umwandlung in Graphics2D
+            Graphics2D g2d = (Graphics2D) g;
+
+            g2d.setColor(Color.BLACK);
 
             int versatz = 10; // Versatz zur Trennung der Kanten-Beschriftungen
 
@@ -209,34 +240,49 @@ public class NodeEditor extends JFrame {
                         int x2 = graph.kanten[i][j].getX2();
                         int y2 = graph.kanten[i][j].getY2();
 
-                        g.setColor(graph.kanten[i][j].getColor());
+                        g2d.setColor(graph.kanten[i][j].getColor());
+                        // Linienstärke anpassen
+                        if (graph.kanten[i][j].getColor() == Color.BLACK) {
+                            g2d.setStroke(new BasicStroke(1));
+                        } else {
+                            g2d.setStroke(new BasicStroke(2));
+                        }
 
                         // Falls die Kante AB und BA verschiedene Gewichte haben
                         if (graph.matrix[i][j] != graph.matrix[j][i]) {
                             if (i < j) {
                                 // Kante AB
                                 // * hier farbe anwenden: g.setColor(Color.color);
-                                g.drawLine(x1 - versatz, y1 - versatz, x2 - versatz, y2 - versatz);
+
+                                g2d.drawLine(x1 - versatz, y1 - versatz, x2 - versatz, y2 - versatz);
                                 // Beschriftung der Kante AB
-                                g.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
+                                g2d.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
                                         + graph.knoten[j].getName(),
                                         (x1 + x2) / 2 - versatz, (y1 + y2) / 2 - versatz);
 
                             } else {
                                 // Kante BA
-                                g.drawLine(x1 + versatz, y1 + versatz, x2 + versatz, y2 + versatz);
+                                g2d.drawLine(x1 + versatz, y1 + versatz, x2 + versatz, y2 + versatz);
                                 // Beschriftung der Kante BA
-                                g.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
+                                g2d.drawString(graph.kanten[i][j].getGewichtString() + " " + graph.knoten[i].getName()
                                         + graph.knoten[j].getName(),
                                         (x1 + x2) / 2 + versatz, (y1 + y2) / 2 + versatz);
 
                             }
                         } else { // Falls die Kante ungerichtet ist (gleiche Gewichte)
-                            g.drawLine(x1, y1, x2, y2);
-                            g.drawString(
+                            // Prüfen, ob die Gegenkante gefärbt ist
+                            if (graph.kanten[j][i] != null && graph.kanten[j][i].getColor() != Color.BLACK) {
+                                g2d.setColor(graph.kanten[j][i].getColor());
+                            }
+
+                            g2d.drawLine(x1, y1, x2, y2);
+                            g2d.drawString(
                                     graph.kanten[i][j].getGewichtString(),
                                     (x1 + x2) / 2, (y1 + y2) / 2);
                         }
+                        // Farbe zurücksetzen
+                        g2d.setColor(Color.BLACK);
+                        g2d.setStroke(new BasicStroke(2));
                     }
                 }
             }
@@ -244,17 +290,17 @@ public class NodeEditor extends JFrame {
             // Zeichne die ausgewählten Knoten
             for (int i = 0; i < graph.knoten.length; i++) {
                 if (selectedPath.contains(graph.knoten[i])) {
-                    g.setColor(Color.GREEN);
+                    g2d.setColor(Color.RED);
                 } else {
-                    g.setColor(Color.BLACK);
+                    g2d.setColor(Color.BLACK);
                 }
-                g.fillOval(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30);
-                g.setColor(Color.WHITE);
-                FontMetrics fm = g.getFontMetrics();
+                g2d.fillOval(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30);
+                g2d.setColor(Color.WHITE);
+                FontMetrics fm = g2d.getFontMetrics();
                 int textWidth = fm.stringWidth(graph.knoten[i].getName());
-                g.drawString(graph.knoten[i].getName(), graph.knoten[i].getX() - textWidth / 2,
+                g2d.drawString(graph.knoten[i].getName(), graph.knoten[i].getX() - textWidth / 2,
                         graph.knoten[i].getY() + fm.getAscent() / 2);
-                g.setColor(Color.BLACK);
+                g2d.setColor(Color.BLACK);
             }
         }
 
@@ -355,6 +401,7 @@ public class NodeEditor extends JFrame {
         kuerzesterWeg.setText(
                 "Kürzester Weg von " + start.getName() + " nach " + ziel.getName() + ": " + kuerzesterWegString
                         + ", Weglänge: " + path);
+        
     }
 
     public static void main(String[] args) {

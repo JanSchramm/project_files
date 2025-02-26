@@ -14,6 +14,7 @@ public class Kanten {
         this.y1 = -1;
         this.x2 = -1;
         this.y2 = -1;
+        color=Color.BLACK;
     }
 
     public int getVon() {
@@ -78,5 +79,9 @@ public class Kanten {
 
     public Color getColor() {
         return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
