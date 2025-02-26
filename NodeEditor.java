@@ -25,7 +25,7 @@ public class NodeEditor extends JFrame {
         // Panel für Button oben in der Mitte
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        astarButton = new JButton("A* Algorithmus starten");
+        astarButton = new JButton("Dijkstra Algorithmus starten");
         topPanel.add(astarButton);
 
         // Panel für Dropdown (Graph Auswahl)
