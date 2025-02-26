@@ -1,3 +1,16 @@
+// ToDo: Donnerstag
+
+// Wege farbig anzeigen <> unterschied zwischen eingen selektiertem Weg und Weg des Algorithmus <> Color.GREEN vs Color.BLUE
+// Jegliche System.out.println("..."); auskommentieren
+// Verhindern von auswahl zweier nicht durch Kanten verbundenen Knoten - Aktuell nur Ausgabe in der Konsole, dass keine Kante besteht
+// Evtl. Text in der mMitte, der sagt: "Du hast den optimalen Weg gefunden!" (Vorher mit Fabian besprechen)
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////    Backup von Code-Schnipseln     ///////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // import java.util.PriorityQueue;
 
 // public class temp {
