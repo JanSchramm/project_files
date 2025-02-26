@@ -10,6 +10,9 @@ public class NodeEditor extends JFrame {
 
     private ArrayList<Knoten> selectedPath = new ArrayList<>();
     private JButton astarButton;
+    private JLabel deinWeg;
+
+    private String weg = new String();
 
     Beispiele beispiele = new Beispiele();
     Graph graph;
@@ -26,7 +29,7 @@ public class NodeEditor extends JFrame {
         // Panel für Button oben in der Mitte
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        astarButton = new JButton("Dijkstra Algorithmus starten");
+        astarButton = new JButton("Dijkstra Algorithmus starten!");
         topPanel.add(astarButton);
 
         // Panel für Dropdown (Graph Auswahl)
@@ -42,8 +45,15 @@ public class NodeEditor extends JFrame {
         headerPanel.add(topPanel, BorderLayout.CENTER);
         headerPanel.add(topLeftPanel, BorderLayout.WEST);
 
+        // Zeigt deinen Weg an
+        JPanel footerPanel = new JPanel();
+        footerPanel.setLayout(new BorderLayout());
+        deinWeg = new JLabel("Dein Weg: ");
+        footerPanel.add(deinWeg, BorderLayout.WEST);
+
         // Füge den oberen Bereich zum Hauptfenster hinzu
         add(headerPanel, BorderLayout.NORTH);
+        add(footerPanel, BorderLayout.SOUTH);
 
         // Panel für Knoten und Kanten
         DrawingPanel drawingPanel = new DrawingPanel();
@@ -123,6 +133,11 @@ public class NodeEditor extends JFrame {
                                     if (!selectedPath.contains(graph.knoten[i])) {
                                         selectedPath.add(graph.knoten[i]);
                                         repaint();
+
+                                        // Aktualisiert das Label deinWeg
+                                        weg += graph.knoten[i].getName();
+                                        deinWeg.setText("Dein Weg: " + weg);
+                                        weg += " ";
                                     }
                                     break;
                                 }
@@ -133,7 +148,24 @@ public class NodeEditor extends JFrame {
                             if (new Rectangle(node.getX() - 15, node.getY() - 15, 30, 30).contains(e.getPoint())) {
                                 selectedPath.remove(node);
                                 repaint();
+
+                                // Aktualisiert das Label deinWeg
+                                weg = "";
+                                for (int i = 0; i < selectedPath.size(); i++){
+                                    // *
+                                    weg += selectedPath.get(i).getName();
+                                }
+                                deinWeg.setText("Dein Weg: " + weg);
+                                weg += " ";
                                 break;
+
+                                /////////////////////////////////////
+                                /// Bug: wenn man mehrere knoten auswählt, und dann einen entfernen möchte
+                                ///      wird das Label auf ABC bzw. ABCD gesetzt, was nicht dem selektierten
+                                ///      Weg entspricht. Problem: i zählt alle Knoten auf, entsprechend der 
+                                ///      länge von selectedPath <> objekte direkt aus selectedPath entnehmen,
+                                ///      von diesen dann den Namen nehmen und weg hinzufügen.
+                                /////////////////////////////////////
                             }
                         }
                     }
