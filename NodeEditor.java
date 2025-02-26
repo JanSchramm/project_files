@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import javax.swing.*;
 
 public class NodeEditor extends JFrame {
@@ -58,6 +60,7 @@ public class NodeEditor extends JFrame {
         astarButton.addActionListener(e -> {
             int totalLength = calculatePathLength();
             System.out.println("Gesamtlänge des Pfades: " + totalLength);
+            starteDijkstra(null, null); // Test der Dijkstra-Methode
         });
     }
 
@@ -222,59 +225,79 @@ public class NodeEditor extends JFrame {
         return liste;
     }
 
-    /* 
     public void starteDijkstra(Knoten start, Knoten ziel) {
+        // Zum Test wird der Start- und Zielknoten fest gewählt
+        start = graph.knoten[0]; // Knoten A
+        ziel = graph.knoten[4]; // Knoten E
+
         // Eine PriorityQueue, die Knoten nach ihrer Entfernung sortiert
         PriorityQueue<Knoten> pq = new PriorityQueue<>(Comparator.comparingInt(Knoten::getEntfernung));
 
         for (Knoten k : graph.knoten) {
             k.initialisieren();
         }
-
         start.setEntfernung(0); // Startknoten hat Entfernung 0 von sich selbst
         pq.add(start); // Startknoten der PriorityQueue hinzufügen
 
+        System.out.print(pq.toString());
+
         while (!pq.isEmpty()) { // solange die Warteschlange nicht leer ist
             Knoten aktuell = pq.poll(); // Entnehme den Knoten mit geringster Entfernung
+            System.out.println("Aktueller Knoten: " + aktuell.getName());
+            System.out.println("Entfernung: " + aktuell.getEntfernung());
 
             if (aktuell == ziel)
-                break;  // while-Schleife verlassen, wenn Zielknoten erreicht
+                break; // while-Schleife verlassen, wenn Zielknoten erreicht
+            // Alle verbundenen Knoten durchgehen
+            for (int i = 0; i < graph.knoten.length; i++) {
+                if (graph.matrix[graph.getIndex(aktuell)][i] != 0) {
+                    Knoten nachbar = graph.knoten[i];
+                    int neueEntfernung = aktuell.getEntfernung() + graph.matrix[graph.getIndex(aktuell)][i];
+                    if (nachbar.getEntfernung() > neueEntfernung) {
+                        nachbar.setEntfernung(neueEntfernung);
+                        nachbar.setVorgaenger(aktuell); // Vorherigen Knoten merken
+                        System.out.println("Nachbar: " + nachbar.getName());
+                    }
 
-            for (Kante k : graph.getKantenVon(aktuell)) {
-                Knoten nachbar = k.getZiel();
-                int neueEntfernung = aktuell.getEntfernung() + k.getGewichtInteger();
-
-                if (nachbar.getEntfernung() > neueEntfernung) {
-                    nachbar.setEntfernung(neueEntfernung);
-                    nachbar.setVorgaenger(aktuell);
-                    pq.add(nachbar);
+                    // Nachbar in die Warteschlange einfügen, falls noch nicht besucht
+                    if (nachbar.getBearbeitungsstatus() == 0) {
+                        pq.add(nachbar);
+                        nachbar.setBearbeitungsstatus(1); // Markiere als besucht
+                    }
                 }
             }
-        }
+            graph.knotenAusgeben(); // Zwischenstand ausgeben
+            // aktuellen Knoten als bearbeitet markieren
+            aktuell.setBearbeitungsstatus(2);
+        } // Ende der while-Schleife
+
     }
 
-    private void druckeKuerzestenWeg(Knoten start, Knoten ziel) {
-        List<Knoten> weg = new ArrayList<>();
-        Knoten aktuell = ziel;
+    /*
+     * private void druckeKuerzestenWeg(Knoten start, Knoten ziel) {
+     * List<Knoten> weg = new ArrayList<>();
+     * Knoten aktuell = ziel;
+     * 
+     * while (aktuell != null) {
+     * weg.add(aktuell);
+     * aktuell = aktuell.getVorgaenger(); // Rückverfolgung
+     * }
+     * 
+     * Collections.reverse(weg); // Da der Weg rückwärts gesammelt wurde, drehen wir
+     * ihn um
+     * 
+     * System.out.println("Kürzester Weg von " + start.getName() + " nach " +
+     * ziel.getName() + ":");
+     * for (int i = 0; i < weg.size(); i++) {
+     * System.out.print(weg.get(i).getName());
+     * if (i < weg.size() - 1) {
+     * System.out.print(" -> ");
+     * }
+     * }
+     * System.out.println("\nGesamte Entfernung: " + ziel.getEntfernung());
+     * }
+     */
 
-        while (aktuell != null) {
-            weg.add(aktuell);
-            aktuell = aktuell.getVorgaenger(); // Rückverfolgung
-        }
-
-        Collections.reverse(weg); // Da der Weg rückwärts gesammelt wurde, drehen wir ihn um
-
-        System.out.println("Kürzester Weg von " + start.getName() + " nach " + ziel.getName() + ":");
-        for (int i = 0; i < weg.size(); i++) {
-            System.out.print(weg.get(i).getName());
-            if (i < weg.size() - 1) {
-                System.out.print(" -> ");
-            }
-        }
-        System.out.println("\nGesamte Entfernung: " + ziel.getEntfernung());
-    }
-
-    */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             NodeEditor editor = new NodeEditor();
