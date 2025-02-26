@@ -228,7 +228,7 @@ public class NodeEditor extends JFrame {
     public void starteDijkstra(Knoten start, Knoten ziel) {
         // Zum Test wird der Start- und Zielknoten fest gewählt
         start = graph.knoten[0]; // Knoten A
-        ziel = graph.knoten[4]; // Knoten E
+        ziel = graph.knoten[2]; // Knoten E
 
         // Eine PriorityQueue, die Knoten nach ihrer Entfernung sortiert
         PriorityQueue<Knoten> pq = new PriorityQueue<>(Comparator.comparingInt(Knoten::getEntfernung));
@@ -246,8 +246,10 @@ public class NodeEditor extends JFrame {
             System.out.println("Aktueller Knoten: " + aktuell.getName());
             System.out.println("Entfernung: " + aktuell.getEntfernung());
 
-            if (aktuell == ziel)
+            if (aktuell == ziel){
+                System.out.println("Ziel erreicht!");
                 break; // while-Schleife verlassen, wenn Zielknoten erreicht
+            }
             // Alle verbundenen Knoten durchgehen
             for (int i = 0; i < graph.knoten.length; i++) {
                 if (graph.matrix[graph.getIndex(aktuell)][i] != 0) {
@@ -270,6 +272,7 @@ public class NodeEditor extends JFrame {
             // aktuellen Knoten als bearbeitet markieren
             aktuell.setBearbeitungsstatus(2);
         } // Ende der while-Schleife
+        graph.knotenAusgeben(); // Endstand ausgeben
 
     }
 
