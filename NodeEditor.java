@@ -1,9 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
-import javax.swing.*;
 import java.util.Collections;
 
 public class NodeEditor extends JFrame {
@@ -11,8 +11,10 @@ public class NodeEditor extends JFrame {
     private ArrayList<Knoten> selectedPath = new ArrayList<>();
     private JButton astarButton;
     private JLabel deinWeg;
+    private JLabel kuerzesterWeg;
 
-    private String weg = new String();
+    private String deinWegString = new String();
+    private String kuerzesterWegString = new String();
 
     Beispiele beispiele = new Beispiele();
     Graph graph;
@@ -35,7 +37,7 @@ public class NodeEditor extends JFrame {
         // Panel für Dropdown (Graph Auswahl)
         JPanel topLeftPanel = new JPanel();
         topLeftPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // Panel links ausrichten
-        String[] antwortMöglichkeiten = { "Graph 1", "Graph 2", "Graph 3", "Graph 4", "Graph 5" };
+        String[] antwortMöglichkeiten = { "Graph 1", "Graph 2", "Graph 3", "Graph 4", "Graph 5", "Zufalls Graph" };
         final JComboBox<String> graphComboSelect = new JComboBox<>(antwortMöglichkeiten);
         topLeftPanel.add(graphComboSelect);
 
@@ -46,10 +48,22 @@ public class NodeEditor extends JFrame {
         headerPanel.add(topLeftPanel, BorderLayout.WEST);
 
         // Zeigt deinen Weg an
+        JPanel bottomRightPanel = new JPanel();
+        bottomRightPanel.setLayout(new BorderLayout());
+        deinWeg = new JLabel("Dein Weg: __, Weglänge: ");
+        bottomRightPanel.add(deinWeg, BorderLayout.WEST);
+
+        // Zeit den kuerzesten Weg an
+        JPanel bottomLeftPanel = new JPanel();
+        bottomLeftPanel.setLayout(new BorderLayout());
+        kuerzesterWeg = new JLabel("Optimaler Weg: __, Weglänge: ");
+        bottomLeftPanel.add(kuerzesterWeg, BorderLayout.EAST);
+
+        // Kombinieren der beiden Panels unten
         JPanel footerPanel = new JPanel();
         footerPanel.setLayout(new BorderLayout());
-        deinWeg = new JLabel("Dein Weg: ");
-        footerPanel.add(deinWeg, BorderLayout.WEST);
+        footerPanel.add(bottomRightPanel, BorderLayout.WEST);
+        footerPanel.add(bottomLeftPanel, BorderLayout.EAST);
 
         // Füge den oberen Bereich zum Hauptfenster hinzu
         add(headerPanel, BorderLayout.NORTH);
@@ -71,7 +85,8 @@ public class NodeEditor extends JFrame {
         astarButton.addActionListener(e -> {
             int totalLength = calculatePathLength();
             System.out.println("Gesamtlänge des Pfades: " + totalLength);
-            starteDijkstra(null, null); // Test der Dijkstra-Methode
+
+            starteDijkstra(selectedPath.get(0), selectedPath.get(selectedPath.size() - 1)); // Test der Dijkstra-Methode
 
             // statt null den start und ziel Knoten angeben
             // >> 1. bzw. last element von selectedPath (siehe mouselistener)
@@ -132,10 +147,11 @@ public class NodeEditor extends JFrame {
                         for (int i = 0; i < graph.knoten.length; i++) {
                             if (graph.knoten[i] != null) {
 
-                                // Überprüfung des Inputs auf Ort
-                                // ToDo: Kanten edge = graph.kanten[indexCurrent][indexNext]; --> Nur
+                                // ToDo
+                                // * Überprüfung des Inputs auf Ort
+                                // * Kanten edge = graph.kanten[indexCurrent][indexNext]; --> Nur
                                 // verbundene Knoten sollen anklickbar sein
-                                //  ToDo: Färbung des Weges (Über calculatePathLength)
+                                // * Färbung des Weges (Über calculatePathLength)
                                 if (new Rectangle(graph.knoten[i].getX() - 15, graph.knoten[i].getY() - 15, 30, 30)
                                         .contains(e.getPoint())) {
                                     if (!selectedPath.contains(graph.knoten[i])) {
@@ -143,9 +159,10 @@ public class NodeEditor extends JFrame {
                                         repaint();
 
                                         // Aktualisiert das Label deinWeg
-                                        weg += graph.knoten[i].getName();
-                                        deinWeg.setText("Dein Weg: " + weg + ", Weglänge: " + calculatePathLength());
-                                        weg += " ";
+                                        deinWegString += graph.knoten[i].getName();
+                                        deinWeg.setText(
+                                                "Dein Weg: " + deinWegString + ", Weglänge: " + calculatePathLength());
+                                        deinWegString += " ";
                                     }
                                     break;
                                 }
@@ -160,13 +177,12 @@ public class NodeEditor extends JFrame {
                                 repaint();
 
                                 // Aktualisiert das Label deinWeg
-                                weg = "";
                                 for (int i = 0; i < selectedPath.size(); i++) {
                                     // *
-                                    weg += selectedPath.get(i).getName();
+                                    deinWegString += selectedPath.get(i).getName();
                                 }
-                                deinWeg.setText("Dein Weg: " + weg + ", Weglänge: " + calculatePathLength());
-                                weg += " ";
+                                deinWeg.setText("Dein Weg: " + deinWegString + ", Weglänge: " + calculatePathLength());
+                                deinWegString += " ";
 
                             }
                         }
@@ -193,7 +209,7 @@ public class NodeEditor extends JFrame {
                         int x2 = graph.kanten[i][j].getX2();
                         int y2 = graph.kanten[i][j].getY2();
 
-                        // Color color = graphen.kanten[i][j].getColor(); implementieren *
+                        g.setColor(graph.kanten[i][j].getColor());
 
                         // Falls die Kante AB und BA verschiedene Gewichte haben
                         if (graph.matrix[i][j] != graph.matrix[j][i]) {
@@ -264,9 +280,6 @@ public class NodeEditor extends JFrame {
     }
 
     public void starteDijkstra(Knoten start, Knoten ziel) {
-        // Zum Test wird der Start- und Zielknoten fest gewählt
-        start = graph.knoten[0]; // Knoten A
-        ziel = graph.knoten[4]; // Knoten E
 
         // Eine PriorityQueue, die Knoten nach ihrer Entfernung sortiert
         PriorityQueue<Knoten> pq = new PriorityQueue<>(Comparator.comparingInt(Knoten::getEntfernung));
@@ -308,12 +321,17 @@ public class NodeEditor extends JFrame {
             aktuell.setBearbeitungsstatus(2);
         } // Ende der while-Schleife
         graph.knotenAusgeben(); // Endstand ausgeben
+
         druckeKuerzestenWeg(start, ziel);
     }
 
     private void druckeKuerzestenWeg(Knoten start, Knoten ziel) {
         ArrayList<Knoten> weg = new ArrayList<>();
         Knoten aktuell = ziel;
+        int path = 0;
+
+        kuerzesterWegString = "";
+        deinWegString = "";
 
         while (aktuell != null) {
             weg.add(aktuell);
@@ -322,15 +340,21 @@ public class NodeEditor extends JFrame {
 
         Collections.reverse(weg); // Da der Weg rückwärts gesammelt wurde, drehen wir ihn um
 
-        System.out.println("Kürzester Weg von " + start.getName() + " nach " +
-                ziel.getName() + ":");
-        for (int i = 0; i < weg.size(); i++) {
-            System.out.print(weg.get(i).getName());
+        for (int i = 0; i < weg.size() - 1; i++) {
+            kuerzesterWegString += weg.get(i).getName();
+
+            // gesamten Weg berechnen
+            path += graph.matrix[graph.getIndex(weg.get(i))][graph.getIndex(weg.get(i + 1))];
+            System.out.println(path);
+
             if (i < weg.size() - 1) {
-                System.out.print(" -> ");
+                kuerzesterWegString += " ";
             }
         }
-        System.out.println("\nGesamte Entfernung: " + ziel.getEntfernung());
+
+        kuerzesterWeg.setText(
+                "Kürzester Weg von " + start.getName() + " nach " + ziel.getName() + ": " + kuerzesterWegString
+                        + ", Weglänge: " + path);
     }
 
     public static void main(String[] args) {

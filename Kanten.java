@@ -1,9 +1,11 @@
-@SuppressWarnings("unused")
+import java.awt.Color;
+
 public class Kanten {
 
     private int von, nach;
     private int gewicht;
     private int x1, y1, x2, y2;
+    private Color color;
 
     public Kanten(int von, int nach) {
         this.von = von;
@@ -72,5 +74,9 @@ public class Kanten {
 
     public void setGewicht(int gewicht) {
         this.gewicht = gewicht;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

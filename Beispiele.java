@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Beispiele {
     public static Graph gibGraph(int nr) {
         switch (nr) {
@@ -11,6 +13,8 @@ public class Beispiele {
                 return gibGraph4();
             case 5:
                 return gibGraph5();
+            case 6:
+                return gibZufaelligenGraph();
             default:
                 System.out.println("Dieses Beispiel gibt es nicht!");
                 System.exit(-1);
@@ -227,6 +231,58 @@ public class Beispiele {
 
             // Kantenliste füllen, XYPos zuweisen
             for (int j = 0; j < namen.length; j++) {
+                if (g.matrix[i][j] != 0) {
+                    g.kanten[i][j] = new Kanten(i, j);
+                    g.kanten[i][j].setX1(xPos[i]);
+                    g.kanten[i][j].setY1(yPos[i]);
+                    g.kanten[i][j].setX2(xPos[j]);
+                    g.kanten[i][j].setY2(yPos[j]);
+                    g.kanten[i][j].setGewicht(g.matrix[i][j]);
+                }
+            }
+        }
+
+        return g;
+    }
+
+    public static Graph gibZufaelligenGraph() {
+        Random rand = new Random();
+        int knotenAnzahl = 6 + rand.nextInt(5); // Zufällige Anzahl von Knoten zwischen 6 und 11
+        Graph g = new Graph(knotenAnzahl);
+        g.knoten = new Knoten[knotenAnzahl];
+        g.kanten = new Kanten[knotenAnzahl][knotenAnzahl];
+
+        String[] namen = new String[knotenAnzahl];
+        int[] xPos = new int[knotenAnzahl];
+        int[] yPos = new int[knotenAnzahl];
+
+        // Zufällige Knotennamen (A, B, C, ...)
+        for (int i = 0; i < knotenAnzahl; i++) {
+            namen[i] = Character.toString((char) ('A' + i));
+            xPos[i] = rand.nextInt(601) + 50; // x-Werte zwischen 0 und 650
+            yPos[i] = rand.nextInt(351) + 50; // y-Werte zwischen 0 und 400
+        }
+
+        // Adjazenzmatrix mit zufälligen Verbindungen und Gewichten
+        g.matrix = new int[knotenAnzahl][knotenAnzahl];
+
+        for (int i = 0; i < knotenAnzahl; i++) {
+            for (int j = i + 1; j < knotenAnzahl; j++) {
+                if (rand.nextDouble() < 0.5) { // 50% Wahrscheinlichkeit für eine Verbindung
+                    int gewicht = 1 + rand.nextInt(20); // Zufälliges Gewicht zwischen 1 und 20
+                    g.matrix[i][j] = gewicht;
+                    g.matrix[j][i] = gewicht; // Ungerichteter Graph
+                }
+            }
+        }
+
+        // Knoten und Kanten initialisieren
+        for (int i = 0; i < knotenAnzahl; i++) {
+            g.knoten[i] = new Knoten(namen[i]);
+            g.knoten[i].setX(xPos[i]);
+            g.knoten[i].setY(yPos[i]);
+
+            for (int j = 0; j < knotenAnzahl; j++) {
                 if (g.matrix[i][j] != 0) {
                     g.kanten[i][j] = new Kanten(i, j);
                     g.kanten[i][j].setX1(xPos[i]);
