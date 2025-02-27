@@ -1,4 +1,3 @@
-NodeEditor README
 Beschreibung
 NodeEditor ist eine Java-basierte Anwendung, die es ermöglicht, Graphen zu bearbeiten und den kürzesten Weg zwischen zwei Knoten mithilfe des Dijkstra-Algorithmus zu berechnen. Die Anwendung bietet eine grafische Benutzeroberfläche (GUI), in der Benutzer Knoten und Kanten interaktiv auswählen und den Algorithmus zur Berechnung des kürzesten Pfades ausführen können.
 
