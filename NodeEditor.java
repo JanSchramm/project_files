@@ -52,12 +52,14 @@ public class NodeEditor extends JFrame {
         JPanel bottomRightPanel = new JPanel();
         bottomRightPanel.setLayout(new BorderLayout());
         deinWeg = new JLabel("Dein Weg: __, Weglänge: ");
+        deinWeg.setForeground(Color.RED);
         bottomRightPanel.add(deinWeg, BorderLayout.WEST);
 
         // Zeigt den kuerzesten Weg an
         JPanel bottomLeftPanel = new JPanel();
         bottomLeftPanel.setLayout(new BorderLayout());
         kuerzesterWeg = new JLabel("Optimaler Weg: __, Weglänge: ");
+        kuerzesterWeg.setForeground(Color.BLUE);
         bottomLeftPanel.add(kuerzesterWeg, BorderLayout.CENTER);
 
         // Kombinieren der beiden Panels unten
