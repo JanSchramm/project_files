@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class NodeEditor extends JFrame {
 
@@ -53,15 +54,16 @@ public class NodeEditor extends JFrame {
         deinWeg = new JLabel("Dein Weg: __, Weglänge: ");
         bottomRightPanel.add(deinWeg, BorderLayout.WEST);
 
-        // Zeit den kuerzesten Weg an
+        // Zeigt den kuerzesten Weg an
         JPanel bottomLeftPanel = new JPanel();
         bottomLeftPanel.setLayout(new BorderLayout());
         kuerzesterWeg = new JLabel("Optimaler Weg: __, Weglänge: ");
-        bottomLeftPanel.add(kuerzesterWeg, BorderLayout.EAST);
+        bottomLeftPanel.add(kuerzesterWeg, BorderLayout.CENTER);
 
         // Kombinieren der beiden Panels unten
         JPanel footerPanel = new JPanel();
         footerPanel.setLayout(new BorderLayout());
+        footerPanel.setBorder(new EmptyBorder(10, 40, 20, 40));
         footerPanel.add(bottomRightPanel, BorderLayout.WEST);
         footerPanel.add(bottomLeftPanel, BorderLayout.EAST);
 
@@ -235,6 +237,15 @@ public class NodeEditor extends JFrame {
                 for (int j = 0; j < graph.kanten[i].length; j++) {
                     if (graph.kanten[i][j] != null) { // Überprüfung auf null
 
+                        // Prüfen, ob es sich um eine Kante des kürzesten Weges handelt
+                if (graph.kanten[i][j].getColor() == Color.BLUE) {
+                    g2d.setColor(Color.BLUE);
+                } else if (selectedPath.contains(graph.knoten[i])) {
+                    g2d.setColor(Color.RED);
+                } else {
+                    g2d.setColor(Color.BLACK);
+                }
+
                         int x1 = graph.kanten[i][j].getX1();
                         int y1 = graph.kanten[i][j].getY1();
                         int x2 = graph.kanten[i][j].getX2();
@@ -393,15 +404,23 @@ public class NodeEditor extends JFrame {
             path += graph.matrix[graph.getIndex(weg.get(i))][graph.getIndex(weg.get(i + 1))];
             System.out.println(path);
 
-            if (i < weg.size() - 1) {
-                kuerzesterWegString += " ";
+            // Kante im Graphen blau färben
+            int indexStart = graph.getIndex(weg.get(i));
+            int indexEnd = graph.getIndex(weg.get(i + 1));
+            if (graph.kanten[indexStart][indexEnd] != null) {
+                graph.kanten[indexStart][indexEnd].setColor(Color.BLUE);
             }
+            if (graph.kanten[indexEnd][indexStart] != null) {
+                graph.kanten[indexEnd][indexStart].setColor(Color.BLUE);
+            }
+            
+            repaint();
         }
 
         kuerzesterWeg.setText(
                 "Kürzester Weg von " + start.getName() + " nach " + ziel.getName() + ": " + kuerzesterWegString
                         + ", Weglänge: " + path);
-        
+
     }
 
     public static void main(String[] args) {
